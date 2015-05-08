@@ -6,6 +6,7 @@ class AttrAccessorObject
       define_method(name) do
          instance_variable_get("@#{name}")
       end
+      
       # setter
       define_method("#{name}=".to_sym) do |arg|
         instance_variable_set("@#{name}", arg)

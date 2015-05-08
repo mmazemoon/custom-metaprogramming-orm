@@ -37,9 +37,9 @@ class DBConnection
   end
 
   def self.execute2(*args)
-    puts args[0]
+    puts args[0]  # displays our query
 
-    instance.execute2(*args)
+    instance.execute2(*args)  # execute2 is an sqlite3 gem method.
   end
 
   def self.last_insert_row_id

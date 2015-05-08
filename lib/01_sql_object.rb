@@ -4,11 +4,32 @@ require 'active_support/inflector'
 # of this project. It was only a warm up.
 
 class SQLObject
+
+  # sanitization can't be done in a from clause
+  # table_name method will alway return a table name
   def self.columns
-    # ...
+    result = DBConnection.execute2(<<-SQL  )
+      SELECT *
+      FROM #{table_name}
+    SQL
+    result[0].map(&:to_sym)
   end
 
+  # must use @ symbol.
   def self.finalize!
+    columns.each do |column|
+      define_method("#{column}=") do |arg|
+        attributes[column] = arg
+      end
+
+      # because we're never storing the data in the variable,
+      # it's stored in the attr hash. thus, won't work:
+      # instance_variable_get("@#{column}")
+
+      define_method(column) do
+        attributes[column]
+      end
+    end
   end
 
   def self.table_name=(table_name)
@@ -39,7 +60,7 @@ class SQLObject
   end
 
   def attributes
-    # ...
+    @attributes ||= {}  # lazy initialization of attrs
   end
 
   def attribute_values
