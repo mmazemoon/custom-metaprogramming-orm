@@ -5,7 +5,7 @@ require 'active_support/inflector'
 
 class SQLObject
 
-  # sanitization can't be done in a from clause
+  # sanitization of parameters can't be done in a from clause
   # table_name method will alway return a table name
   def self.columns
     result = DBConnection.execute2(<<-SQL  )
@@ -46,7 +46,7 @@ class SQLObject
     @table_name.nil? ? self.name.tableize : @table_name
   end
 
-  # Use ordinary Ruby string interpolation (#{whatevs}) for this;
+  # Use ordinary Ruby string interpolation #{whatevs} for this;
   # SQL will only let you use ? to interpolate values, not table or column names.
 
   def self.all
@@ -102,19 +102,26 @@ class SQLObject
     col_names = self.class.columns
     question_marks = ["?"] * (col_names.length)
     DBConnection.execute(<<-SQL, *attribute_values )
-    INSERT INTO #{self.class.table_name} (#{col_names.join(", ")})
-    VALUES
-      (#{question_marks.join(", ")});
+      INSERT INTO #{self.class.table_name} (#{col_names.join(", ")})
+      VALUES
+        (#{question_marks.join(", ")});
     SQL
     self.id= DBConnection.last_insert_row_id
-    # we need to update our attributes hash
+    # we need to update our own attributes hash
   end
 
+  # consider the sql code as an entire string in ''
+  # but with string interpolation capability.
   def update
-    # ...
+    set_vals = self.class.columns.map{|attr| "#{attr}= ?"}.join(", ")
+    DBConnection.execute(<<-SQL, *attribute_values)
+      UPDATE #{self.class.table_name}
+      SET #{set_vals}
+      WHERE id = #{self.id}
+    SQL
   end
 
   def save
-    # ...
+    self.id.nil? ? self.insert : self.update
   end
 end
