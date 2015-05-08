@@ -4,11 +4,11 @@ class AttrAccessorObject
     names.each do |name|
       # getter
       define_method(name) do
-         instance_variable_get("@#{name}".to_sym)
+         instance_variable_get("@#{name}")
       end
       # setter
       define_method("#{name}=".to_sym) do |arg|
-        instance_variable_set("@#{name}".to_sym, arg)
+        instance_variable_set("@#{name}", arg)
       end
 
     end

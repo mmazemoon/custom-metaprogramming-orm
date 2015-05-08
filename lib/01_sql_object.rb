@@ -12,11 +12,14 @@ class SQLObject
   end
 
   def self.table_name=(table_name)
-    # ...
+    # @table_name = table_name
+    instance_variable_set(:@table_name, table_name)
   end
+  # no benefit to using #i_v_s because we know what the method name is going to be.
+  # it's not dynamic
 
   def self.table_name
-    # ...
+    @table_name.nil? ? self.name.tableize : @table_name
   end
 
   def self.all
