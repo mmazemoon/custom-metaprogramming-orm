@@ -42,3 +42,5 @@ describe 'Searchable' do
     expect(Human.where(fname: 'Nowhere', lname: 'Man')).to eq([])
   end
 end
+
+git filter-branch -f --env-filter "GIT_AUTHOR_NAME='Mark Azemoon'; GIT_AUTHOR_EMAIL='mmazemoon@gmail.com'; GIT_COMMITTER_NAME='Mark Azemoon'; GIT_COMMITTER_EMAIL='mmazemoon@gmail.com';" HEAD

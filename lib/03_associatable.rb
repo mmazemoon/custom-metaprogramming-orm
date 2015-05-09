@@ -19,14 +19,30 @@ class AssocOptions
 end
 
 class BelongsToOptions < AssocOptions
+  # name is name of associations
   def initialize(name, options = {})
-    # ...
+    self.class_name = options[:class_name]
+    self.foreign_key = options[:foreign_key]
+    self.primary_key = options[:primary_key]
+
+    self.class_name= name.to_s.camelcase if class_name.nil?
+    self.foreign_key= "#{name}_id".to_sym if foreign_key.nil?
+    self.primary_key= :id if primary_key.nil?
   end
 end
 
 class HasManyOptions < AssocOptions
   def initialize(name, self_class_name, options = {})
-    # ...
+   self.class_name = options[:class_name]
+   self.foreign_key = options[:foreign_key]
+   self.primary_key = options[:primary_key]
+
+    if class_name.nil?
+      self.class_name = "dude"
+    end
+
+# 8 methods
+# bye
   end
 end
 
