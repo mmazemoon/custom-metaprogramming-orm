@@ -46,5 +46,6 @@ module Associatable
 end
 
 class SQLObject
-  # Mixin Associatable here...
+  # Mixin Associatable
+  include Associatable
 end
